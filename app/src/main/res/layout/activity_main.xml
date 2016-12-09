@@ -23,4 +23,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="@string/testcase_plugin"/>
+
+  <Button
+    android:id="@+id/button_case_dynamic"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/testcase_dynamic"/>
 </LinearLayout>

@@ -7,22 +7,7 @@
   android:tag="skin:view_bg:background"
   android:background="@color/view_bg">
 
-  <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="@color/title_text_color"
-    android:textSize="24sp"
-    android:tag="skin:title_text_color:textColor"
-    android:text="@string/simple_test_title"/>
-
-  <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="4dp"
-    android:textColor="@color/subtitle_text_color"
-    android:textSize="16sp"
-    android:tag="skin:subtitle_text_color:textColor"
-    android:text="@string/simple_test_subtitle"/>
+  <include layout="@layout/simple_test_item" />
 
   <Button
     android:id="@+id/button_toggle_plugin"

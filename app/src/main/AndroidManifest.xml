@@ -38,6 +38,15 @@
         <category android:name="android.intent.category.DEFAULT"/>
       </intent-filter>
     </activity>
+
+    <!-- dynamic case -->
+    <activity android:name=".sample.DynamicSkinActivity">
+      <intent-filter>
+        <action android:name="com.ijoic.skinchange.case.dynamic"/>
+
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+    </activity>
   </application>
 
 </manifest>

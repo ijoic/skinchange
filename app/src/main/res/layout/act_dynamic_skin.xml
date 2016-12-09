@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:tag="skin:view_bg:background"
+  android:background="@color/view_bg">
+
+  <LinearLayout
+    style="?android:attr/buttonBarStyle"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <Button
+      android:id="@+id/button_add_view"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_marginLeft="8dp"
+      android:layout_marginStart="8dp"
+      android:text="@string/simple_test_action_add_view"/>
+
+    <Button
+      android:id="@+id/button_toggle"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_marginLeft="8dp"
+      android:layout_marginStart="8dp"
+      android:text="@string/simple_test_action_toggle_skin"/>
+
+    <Button
+      android:id="@+id/button_reset"
+      style="?android:attr/buttonBarButtonStyle"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:layout_marginLeft="8dp"
+      android:layout_marginStart="8dp"
+      android:text="@string/simple_test_action_reset"/>
+  </LinearLayout>
+
+  <LinearLayout
+    android:id="@+id/child_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <include layout="@layout/simple_test_item" />
+
+  </LinearLayout>
+
+</LinearLayout>
