@@ -135,14 +135,8 @@ public class SkinManager {
     }
     PackageManager pm = context.getPackageManager();
 
-    try {
-      PackageInfo info = pm.getPackageInfo(pluginPath, PackageManager.GET_ACTIVITIES);
-      return packageName.equals(info.packageName);
-
-    } catch (PackageManager.NameNotFoundException e) {
-      e.printStackTrace();
-    }
-    return false;
+    PackageInfo info = pm.getPackageArchiveInfo(pluginPath, PackageManager.GET_ACTIVITIES);
+    return packageName.equals(info.packageName);
   }
 
   @Nullable
