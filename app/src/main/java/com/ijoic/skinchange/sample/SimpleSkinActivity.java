@@ -2,8 +2,11 @@ package com.ijoic.skinchange.sample;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.ijoic.skin.SkinManager;
+import com.ijoic.skinchange.R;
+import com.ijoic.skinchange.TestConfig;
 
 /**
  * 简单皮肤活动
@@ -13,11 +16,21 @@ import com.ijoic.skin.SkinManager;
  */
 public class SimpleSkinActivity extends Activity {
 
+  private String currSuffix = TestConfig.SUFFIX_DEFAULT;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    SkinManager.getInstance().init(this);
     SkinManager.getInstance().register(this);
+    setContentView(R.layout.act_simple_skin);
+
+    findViewById(R.id.button_toggle_skin).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        currSuffix = TestConfig.SUFFIX_DEFAULT.equals(currSuffix) ? TestConfig.SUFFIX_RED : TestConfig.SUFFIX_DEFAULT;
+        SkinManager.getInstance().changeSkin(currSuffix);
+      }
+    });
   }
 
   @Override
