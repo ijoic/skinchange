@@ -23,10 +23,6 @@ public class TextColorAttrType implements SkinAttrType {
       return;
     }
     ResourcesManager rm = SkinManager.getInstance().getResourcesManager();
-
-    if (rm == null) {
-      return;
-    }
     ColorStateList colorList = rm.getColorStateList(resName);
 
     if (colorList == null) {

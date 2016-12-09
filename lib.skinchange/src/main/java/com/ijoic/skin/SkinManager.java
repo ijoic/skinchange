@@ -52,8 +52,9 @@ public class SkinManager {
   private final @NonNull List<WeakReference<Activity>> refActivitiesRemoveCache = new ArrayList<>();
 
   private @Nullable WeakReference<Context> refContext;
-  private @Nullable ResourcesManager resourcesManager;
   private @Nullable SkinPreference skinPrefs;
+
+  private final @NonNull ResourcesManager resourcesManager = new ResourcesManager();
 
   /**
    * 初始化
@@ -72,17 +73,29 @@ public class SkinManager {
     String suffix = skinPrefs.getPluginSuffix();
     RefUtils.trim(refActivities, refActivitiesRemoveCache);
 
+    if (!initPlugin(pluginPath, pluginPackage, suffix)) {
+      resourcesManager.setResources(context.getResources());
+      resourcesManager.setSkinInfo(context.getPackageName(), skinPrefs.getPluginSuffix());
+    }
+  }
+
+  private boolean initPlugin(String pluginPath, String pluginPackage, String suffix) {
     if (!isValidPluginParams(pluginPath, pluginPackage)) {
-      return;
+      return false;
     }
 
     try {
       loadPlugin(pluginPath, pluginPackage, suffix);
+      return true;
+
     } catch (Exception e) {
       e.printStackTrace();
-      skinPrefs.clear();
-      resourcesManager = null;
+
+      if (skinPrefs != null) {
+        skinPrefs.clear();
+      }
     }
+    return false;
   }
 
   /**
@@ -150,7 +163,8 @@ public class SkinManager {
 
     Resources superRes = context.getResources();
     Resources res = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getConfiguration());
-    resourcesManager = new ResourcesManager(res, pluginPackage, suffix);
+    resourcesManager.setResources(res);
+    resourcesManager.setSkinInfo(pluginPackage, suffix);
   }
 
   /**
@@ -158,7 +172,7 @@ public class SkinManager {
    *
    * @return 资源管理器
    */
-  public @Nullable ResourcesManager getResourcesManager() {
+  public @NonNull ResourcesManager getResourcesManager() {
     return resourcesManager;
   }
 
@@ -236,7 +250,11 @@ public class SkinManager {
    */
   public void changeSkin(@Nullable String suffix) {
     clearPluginInfo(); // clear before
-    skinPrefs.setPluginSuffix(suffix);
+
+    if (skinPrefs != null) {
+      skinPrefs.setPluginSuffix(suffix);
+      resourcesManager.setSuffix(suffix);
+    }
     notifyChangedListeners();
   }
 
@@ -248,7 +266,7 @@ public class SkinManager {
    * @param callback 更改回调
    */
   public void changeSkin(@Nullable String pluginPath, @Nullable String pluginPackage, @Nullable SkinChangeCallback callback) {
-
+    changeSkin(pluginPath, pluginPackage, null, callback);
   }
 
   /**

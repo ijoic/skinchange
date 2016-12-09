@@ -23,10 +23,6 @@ public class BackgroundAttrType implements SkinAttrType {
   @Override
   public void apply(@NonNull View view, @NonNull String resName) {
     ResourcesManager rm = SkinManager.getInstance().getResourcesManager();
-
-    if (rm == null) {
-      return;
-    }
     Drawable d = rm.getDrawableByName(resName);
 
     if (d != null) {

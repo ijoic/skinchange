@@ -23,10 +23,6 @@ public class SrcAttrType implements SkinAttrType {
       return;
     }
     ResourcesManager rm = SkinManager.getInstance().getResourcesManager();
-
-    if (rm == null) {
-      return;
-    }
     Drawable d = rm.getDrawableByName(resName);
 
     if (d != null) {
