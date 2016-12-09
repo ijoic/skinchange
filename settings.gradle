@@ -1,1 +1,1 @@
-include ':app', ':lib.skinchange', ':skin.default', ':skin.red'
+include ':app', ':lib.skinchange', ':skin.default', ':skin.red', ':outskin.default'
