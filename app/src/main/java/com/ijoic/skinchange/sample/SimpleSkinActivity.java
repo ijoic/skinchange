@@ -31,6 +31,13 @@ public class SimpleSkinActivity extends Activity {
         SkinManager.getInstance().changeSkin(currSuffix);
       }
     });
+    findViewById(R.id.button_reset).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        currSuffix = TestConfig.SUFFIX_DEFAULT;
+        SkinManager.getInstance().removeAnySkin();
+      }
+    });
   }
 
   @Override

@@ -4,6 +4,7 @@
   <string name="simple_test_title">Jet Story</string>
   <string name="simple_test_subtitle">Long long ago, there is a small town.</string>
   <string name="simple_test_action_toggle_skin">Toggle</string>
+  <string name="simple_test_action_reset">Reset</string>
 
   <string name="testcase_simple">Simple Skin Change</string>
 
