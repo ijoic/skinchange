@@ -74,8 +74,7 @@ public class SkinManager {
     RefUtils.trim(refActivities, refActivitiesRemoveCache);
 
     if (!initPlugin(pluginPath, pluginPackage, suffix)) {
-      resourcesManager.setResources(context.getResources());
-      resourcesManager.setSkinInfo(context.getPackageName(), skinPrefs.getPluginSuffix());
+      resetResourcesManager();
     }
   }
 
@@ -221,6 +220,7 @@ public class SkinManager {
    */
   public void removeAnySkin() {
     clearPluginInfo();
+    resetResourcesManager();
     notifyChangedListeners();
   }
 
@@ -229,6 +229,16 @@ public class SkinManager {
       return;
     }
     skinPrefs.clear();
+  }
+
+  private void resetResourcesManager() {
+    Context context = getContext();
+
+    if (context == null) {
+      return;
+    }
+    resourcesManager.setResources(context.getResources());
+    resourcesManager.setSkinInfo(context.getPackageName(), skinPrefs == null ? null : skinPrefs.getPluginSuffix());
   }
 
   private void notifyChangedListeners() {
