@@ -6,11 +6,13 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 
 import com.ijoic.skin.ResourcesManager;
 import com.ijoic.skin.SkinManager;
 import com.ijoic.skin.attr.SkinAttrType;
+import com.ijoic.skin.constant.SkinConfig;
 
 /**
  * 背景属性类型
@@ -32,7 +34,7 @@ public class BackgroundAttrType implements SkinAttrType {
         int color = rm.getColor(resName);
         view.setBackgroundColor(color);
       } catch (Resources.NotFoundException e) {
-        e.printStackTrace();
+        Log.i(SkinConfig.TAG, "resource color not found [" + resName + "].");
       }
     }
   }

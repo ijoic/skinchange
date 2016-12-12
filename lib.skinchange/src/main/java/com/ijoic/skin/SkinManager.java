@@ -156,7 +156,7 @@ public class SkinManager {
 
     Resources superRes = context.getResources();
     Resources res = new Resources(assetManager, superRes.getDisplayMetrics(), superRes.getConfiguration());
-    resourcesManager.setResources(res);
+    resourcesManager.setResources(res, true);
     resourcesManager.setSkinInfo(pluginPackage, suffix);
   }
 
@@ -257,7 +257,7 @@ public class SkinManager {
 
     if (skinPrefs != null) {
       skinPrefs.setPluginSuffix(suffix);
-      resourcesManager.setSuffix(suffix);
+      resetResourcesManager();
     }
     notifyChangedListeners();
   }

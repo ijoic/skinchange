@@ -18,10 +18,16 @@ import java.lang.ref.WeakReference;
  * @version 1.0
  */
 public class ResourcesManager {
+  // NOTE：
+  // 1. 普通资源，使用Applcaiont的Resources引用，当Application结束后，引用失效
+  // 2. 插件资源，使用pluginResources保持引用，在必要的时候，主动释放资源
 
   private @NonNull WeakReference<Resources> refResources;
   private @NonNull String packageName;
   private @NonNull String suffix;
+
+  // 插件资源
+  private Resources pluginResources;
 
   private static final String TYPE_DRAWABLE = "drawable";
   private static final String TYPE_COLOR = "color";
@@ -41,8 +47,20 @@ public class ResourcesManager {
    * @param res 资源
    */
   void setResources(@NonNull Resources res) {
-    refResources = new WeakReference<>(res);
+    setResources(res, false);
   }
+
+  /**
+   * 设置资源
+   *
+   * @param res 资源
+   * @param isPluginResources 是否是插件资源
+   */
+  void setResources(@NonNull Resources res, boolean isPluginResources) {
+    refResources = new WeakReference<>(res);
+    pluginResources = isPluginResources ? res : null;
+  }
+
 
   /**
    * 设置皮肤信息
@@ -136,6 +154,15 @@ public class ResourcesManager {
       }
     }
     return null;
+  }
+
+  /**
+   * 释放资源（如果存在）
+   */
+  public void free() {
+    if (pluginResources != null) {
+      pluginResources = null;
+    }
   }
 
   @Contract(pure = true)

@@ -8,8 +8,19 @@ package com.ijoic.skin.constant;
  */
 public interface SkinConfig {
 
+  /**
+   * 皮肤日志TAG
+   */
+  String TAG = "SkinChange";
+
+  /**
+   * 皮肤首选项名称
+   */
   String SKIN_PREF_NAME = "ijoic_skin";
 
+  /**
+   * 皮肤前缀
+   */
   String SKIN_PREFIX = "skin:";
 
 }
