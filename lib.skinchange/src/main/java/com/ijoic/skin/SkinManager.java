@@ -11,13 +11,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.ijoic.skin.attr.SkinAttrSupport;
 import com.ijoic.skin.attr.SkinView;
 import com.ijoic.skin.callback.SkinChangeCallback;
-import com.ijoic.skin.util.RefUtils;
+import com.ijoic.skin.util.ContainerUtils;
+import com.ijoic.skin.view.ActivityViewContainer;
+import com.ijoic.skin.view.FragmentViewContainer;
+import com.ijoic.skin.view.ViewContainer;
 
 import org.jetbrains.annotations.Contract;
 
@@ -48,8 +52,8 @@ public class SkinManager {
 
   private static final @NonNull Handler handler = new Handler();
 
-  private final @NonNull List<WeakReference<Activity>> refActivities = new ArrayList<>();
-  private final @NonNull List<WeakReference<Activity>> refActivitiesRemoveCache = new ArrayList<>();
+  private final @NonNull List<ViewContainer> viewContainers = new ArrayList<>();
+  private final @NonNull List<ViewContainer> viewContainersRemoveCache = new ArrayList<>();
 
   private @Nullable WeakReference<Context> refContext;
   private @Nullable SkinPreference skinPrefs;
@@ -71,7 +75,7 @@ public class SkinManager {
     String pluginPath = skinPrefs.getPluginPath();
     String pluginPackage = skinPrefs.getPluginPackageName();
     String suffix = skinPrefs.getPluginSuffix();
-    RefUtils.trim(refActivities, refActivitiesRemoveCache);
+    ContainerUtils.trim(viewContainers, viewContainersRemoveCache);
 
     if (!initPlugin(pluginPath, pluginPackage, suffix)) {
       resetResourcesManager();
@@ -177,14 +181,7 @@ public class SkinManager {
    * @param activity 活动
    */
   public void register(@NonNull final Activity activity) {
-    RefUtils.addItem(refActivities, activity);
-
-    handler.post(new Runnable() {
-      @Override
-      public void run() {
-        applySkin(activity);
-      }
-    });
+    register(new ActivityViewContainer(activity));
   }
 
   /**
@@ -195,11 +192,48 @@ public class SkinManager {
    * @param activity 活动
    */
   public void unregister(@NonNull Activity activity) {
-    RefUtils.removeItem(refActivities, activity);
+    unregister(new ActivityViewContainer(activity));
   }
 
-  private void applySkin(@NonNull Activity rootActivity) {
-    applySkin(rootActivity.findViewById(android.R.id.content));
+  /**
+   * 注册
+   *
+   * <p>在{@link Fragment#onActivityCreated(Bundle)}方法中调用</p>
+   *
+   * @param fragment 碎片
+   */
+  public void register(@NonNull final Fragment fragment) {
+    register(new FragmentViewContainer(fragment));
+  }
+
+  /**
+   * 取消注册
+   *
+   * <p>在{@link Fragment#onDestroy()}方法中调用</p>
+   *
+   * @param fragment 碎片
+   */
+  public void unregister(@NonNull Fragment fragment) {
+    unregister(new FragmentViewContainer(fragment));
+  }
+
+  private void register(@NonNull final ViewContainer containerItem) {
+    ContainerUtils.addItem(viewContainers, containerItem);
+
+    handler.post(new Runnable() {
+      @Override
+      public void run() {
+        applySkin(containerItem);
+      }
+    });
+  }
+
+  private void unregister(final ViewContainer containerItem) {
+    ContainerUtils.removeItem(viewContainers, containerItem);
+  }
+
+  private void applySkin(@NonNull ViewContainer viewContainer) {
+    applySkin(viewContainer.getView());
   }
 
   private void applySkin(@Nullable View rootView) {
@@ -236,13 +270,13 @@ public class SkinManager {
   }
 
   private void notifyChangedListeners() {
-    Activity activity;
+    View view;
 
-    for (WeakReference<Activity> refActivity :refActivities) {
-      activity = refActivity.get();
+    for (ViewContainer containerItem : viewContainers) {
+      view = containerItem.getView();
 
-      if (activity != null) {
-        applySkin(activity);
+      if (view != null) {
+        applySkin(view);
       }
     }
   }
