@@ -18,7 +18,6 @@ import android.view.View;
 import com.ijoic.skin.attr.SkinAttrSupport;
 import com.ijoic.skin.attr.SkinView;
 import com.ijoic.skin.callback.SkinChangeCallback;
-import com.ijoic.skin.util.ContainerUtils;
 import com.ijoic.skin.view.ActivityViewContainer;
 import com.ijoic.skin.view.FragmentViewContainer;
 import com.ijoic.skin.view.ViewContainer;

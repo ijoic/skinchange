@@ -1,4 +1,4 @@
-package com.ijoic.skin.util;
+package com.ijoic.skin;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author ijoic verstlim@126.com
  * @version 1.0
  */
-public class ContainerUtils {
+class ContainerUtils {
 
   /**
    * 在容器列表中，添加容器
@@ -21,7 +21,7 @@ public class ContainerUtils {
    * @param containerItems 容器列表
    * @param item 容器
    */
-  public static void addItem(@NonNull List<ViewContainer> containerItems, @NonNull  ViewContainer item) {
+  static void addItem(@NonNull List<ViewContainer> containerItems, @NonNull  ViewContainer item) {
     if (!containsItem(containerItems, item)) {
       containerItems.add(item);
     }
@@ -33,7 +33,7 @@ public class ContainerUtils {
    * @param containerItems 容器列表
    * @param item 容器
    */
-  public static void removeItem(@NonNull List<ViewContainer> containerItems, @NonNull  ViewContainer item) {
+  static void removeItem(@NonNull List<ViewContainer> containerItems, @NonNull  ViewContainer item) {
     ViewContainer containerItem = findContainerItem(containerItems, item);
 
     if (containerItem != null) {
@@ -49,7 +49,7 @@ public class ContainerUtils {
    * @param containerItems 容器列表
    * @param removeCache 移除缓存
    */
-  public static void trim(@NonNull List<ViewContainer> containerItems, @NonNull List<ViewContainer> removeCache) {
+  static void trim(@NonNull List<ViewContainer> containerItems, @NonNull List<ViewContainer> removeCache) {
     removeCache.clear();
 
     for (ViewContainer containerItem : containerItems) {
