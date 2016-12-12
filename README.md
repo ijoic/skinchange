@@ -23,14 +23,7 @@ dependencies {
 }
 
 ```
-或者直接添加依赖：
-```java
 
-dependencies {
-  compile 'com.ijoic.skin:1.0.1'
-}
-
-```
 ## 使用
 
 * Application
