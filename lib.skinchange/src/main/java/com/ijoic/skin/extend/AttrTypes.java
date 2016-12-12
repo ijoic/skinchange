@@ -6,7 +6,7 @@ package com.ijoic.skin.extend;
  * @author ijoic verstlim@126.com
  * @version 1.0
  */
-interface AttrTypes {
+public interface AttrTypes {
 
   /**
    * 文字颜色[TextView]
@@ -27,5 +27,25 @@ interface AttrTypes {
    * 分隔符[ListView]
    */
   String DIVIDER = "divider";
+
+  /**
+   * 左侧图片[TextView]
+   */
+  String DRAWABLE_LEFT = "drawableLeft";
+
+  /**
+   * 左侧图片[TextView]
+   */
+  String DRAWABLE_TOP = "drawableTop";
+
+  /**
+   * 右侧图片[TextView]
+   */
+  String DRAWABLE_RIGHT = "drawableRight";
+
+  /**
+   * 下侧图片[TextView]
+   */
+  String DRAWABLE_BOTTOM = "drawableBottom";
 
 }
