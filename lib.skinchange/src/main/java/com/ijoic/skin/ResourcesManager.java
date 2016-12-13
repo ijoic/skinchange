@@ -31,6 +31,7 @@ public class ResourcesManager {
 
   private static final String TYPE_DRAWABLE = "drawable";
   private static final String TYPE_COLOR = "color";
+  private static final String TYPE_MIPMAP = "mipmap";
 
   /**
    * 构造函数
@@ -102,6 +103,9 @@ public class ResourcesManager {
     resName = appendSuffix(resName);
     int resId = res.getIdentifier(resName, TYPE_DRAWABLE, packageName);
 
+    if (resId == 0) {
+      resId = res.getIdentifier(resName, TYPE_MIPMAP, packageName);
+    }
     if (resId != 0) {
       try {
         return res.getDrawable(resId);
