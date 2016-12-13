@@ -59,6 +59,27 @@ dependencies {
     
     ```
     
+* Fragment
+    
+    在需要换肤的`Fragment`的`onActivityCreated()`和`onDestroy`中，分别：
+    
+    ```java
+    
+    @Override
+    protected void onActivityCreated(Bundle savedInstanceState) {
+      super.onActivityCreated(savedInstanceState);
+      SkinManager.getInstance().register(this);
+      // ..
+    }
+    
+    @Override
+    protected void onDestroy() {
+      super.onDestroy();
+      SkinManager.getInstance().unregister(this);
+    }
+    
+    ```
+    
 * 布局文件
     
     布局文件中添加支持，主要依赖于tag属性：
@@ -121,5 +142,85 @@ dependencies {
     应用内多套皮肤以后缀区别就可以，比如：`main_bg`，皮肤资源可以为：`main_bg_red`、`main_bg_green`等。
     
     换肤时，直接传入后缀，例如上面的`red`、`green`。
+   
+* 扩展
     
+    1. 创建属性类型：
+      
+      ```java
+      
+      public class MyAttrType implements SkinAttrType {
+        @Override
+        public void apply(@NonNull View view, @NonNull String resName) {
+          if (!(view instance MyCustomView)) {
+            return;
+          }
+          ResourcesManager rm = SkinManager.getInstance().getResourcesManager();
+          Drawable d = rm.getDrawableByName(resName);
+          
+          if (d != null) {
+            // ..
+          }
+        }
+      }
+      
+      ```
+      
+    2. 在`Application#onCreate()`方法中，配置属性类型：
+      
+      ```
+      
+      @Override
+      protected void onCreate() {
+        super.onCreate();
+        
+        AttrTypeFactory.register("my_custom_attr", MyAttrType.class);
+        // ..
+        SkinManager.getInstance().init(this);
+      }
+      
+      ```
+      
+    3. 在xml或者动态生成的视图中使用：
+      
+      ```
+      
+      MyCustomView view = findViewById(R.id.my_custom_view);
+      // ..
+      
+      SkinTool.fillTag(view, R.drawable.ic_default, "my_custom_attr");
+      SkinManager.getInstance().injectSkin(view);
+      
+      ```
+      
+* 动态创建、修改视图
+    
+    动态创建的视图，需要手动调用注入皮肤。这种类型的应用场景，多见于`Adapter`、`PopupWindow`之类。
+    
+    在动态注入皮肤之前，仍然要调用默认的属性设置代码。
+    
+    * xml中设置皮肤TAG，代码中不做修改：
+      
+      ```
+      
+      View view = LayoutInflater.from(context).inflate(R.layout.my_layout, parent, false);
+      SkinManager.getInstance().injectSkin(view);
+      
+      ```
+      
+    * 在代码中修改皮肤关联属性：
+      
+      ```
+      
+      View rootView = findViewById(R.id.my_cusom_view);
+      TextView tv = (TextView) rootView.findViewById(R.id.my_text);
+      
+      tv.setTextColor(context.getResources().getColor(R.color.text_secondary));
+      SkinTool.fillTag(tv, R.color.text_secondary, AttrTypes.COLOR);
+
+      // ..
+
+      SkinManager.getInstance().injectSkin(rootView);
+      
+      ```
     
