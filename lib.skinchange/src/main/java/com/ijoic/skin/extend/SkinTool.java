@@ -35,7 +35,7 @@ public class SkinTool {
       Log.i(SkinConfig.TAG, "invalid skin view [" + view.toString() + "], context not found");
       return;
     }
-    String resName = context.getResources().getResourceName(resId);
+    String resName = context.getResources().getResourceEntryName(resId);
 
     if (resName == null) {
       return;
