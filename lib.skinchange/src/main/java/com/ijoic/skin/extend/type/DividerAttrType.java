@@ -1,9 +1,10 @@
 package com.ijoic.skin.extend.type;
 
+import android.content.res.Resources;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.ijoic.skin.ResourcesManager;
@@ -26,6 +27,15 @@ public class DividerAttrType implements SkinAttrType {
     ResourcesManager rm = SkinManager.getInstance().getResourcesManager();
     Drawable d = rm.getDrawableByName(resName);
 
+    if (d == null) {
+      try {
+        int dividerColor = rm.getColor(resName);
+        d = new ColorDrawable(dividerColor);
+
+      } catch (Resources.NotFoundException e) {
+        e.printStackTrace();
+      }
+    }
     if (d != null) {
       ((ListView) view).setDivider(d);
     }

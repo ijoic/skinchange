@@ -1,5 +1,6 @@
 package com.ijoic.skin.callback;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 
 /**
@@ -17,6 +18,6 @@ public interface SkinTask<T extends View> {
    *
    * @param view 视图
    */
-  void performSkinChange(T view);
+  void performSkinChange(@NonNull T view);
 
 }

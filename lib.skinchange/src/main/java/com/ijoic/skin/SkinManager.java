@@ -248,6 +248,7 @@ public class SkinManager {
    * @see ResourcesTool#getColorStateList(int)
    */
   public<T extends View> void registerSkinTask(@NonNull T view, @NonNull SkinTask<T> skinTask) {
+    skinTask.performSkinChange(view);
     register(TAG_SKIN_TASK, new SkinTaskViewContainer<T>(view, skinTask));
   }
 
