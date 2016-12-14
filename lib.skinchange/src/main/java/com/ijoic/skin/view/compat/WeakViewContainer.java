@@ -1,7 +1,10 @@
-package com.ijoic.skin.view;
+package com.ijoic.skin.view.compat;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
+
+import com.ijoic.skin.view.ViewContainer;
 
 import java.lang.ref.WeakReference;
 
@@ -27,7 +30,7 @@ abstract class WeakViewContainer<T> implements ViewContainer {
   }
 
   @Override
-  public final View getView() {
+  public @Nullable View getView() {
     T compat = refViewCompat.get();
 
     if (compat == null) {
@@ -45,7 +48,7 @@ abstract class WeakViewContainer<T> implements ViewContainer {
       return false;
     }
     T compat = refViewCompat.get();
-    T otherCompat = ((WeakViewContainer<T>) other).refViewCompat.get();
+    Object otherCompat = ((WeakViewContainer) other).refViewCompat.get();
 
     return compat == otherCompat || (compat != null && compat.equals(otherCompat));
   }

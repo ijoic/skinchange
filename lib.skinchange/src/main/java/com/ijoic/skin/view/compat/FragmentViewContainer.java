@@ -1,4 +1,4 @@
-package com.ijoic.skin.view;
+package com.ijoic.skin.view.compat;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;

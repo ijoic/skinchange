@@ -79,13 +79,39 @@ public class ResourcesManager {
    *
    * @param suffix 资源后缀
    */
-  void setSuffix(@Nullable String suffix) {
+  private void setSuffix(@Nullable String suffix) {
     if (TextUtils.isEmpty(suffix)) {
       suffix = "";
     } else {
       suffix = "_" + suffix;
     }
     this.suffix = suffix;
+  }
+
+  /**
+   * 根据资源名称获取Drawable
+   *
+   * @param resName 资源名称
+   * @param type 资源类型
+   * @return Drawable
+   */
+  @Nullable Drawable getDrawableByName(@NonNull String resName, @NonNull String type) {
+    Resources res = getResources();
+
+    if (res == null) {
+      return null;
+    }
+    resName = appendSuffix(resName);
+    int resId = res.getIdentifier(resName, type, packageName);
+
+    if (resId != 0) {
+      try {
+        return res.getDrawable(resId);
+      } catch (Resources.NotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+    return null;
   }
 
   /**
@@ -120,16 +146,53 @@ public class ResourcesManager {
    * 根据资源名称获取颜色值
    *
    * @param resName 资源名称
+   * @param type 资源类型
    * @return 颜色值
    */
-  public int getColor(@NonNull String resName) throws Resources.NotFoundException {
+  int getColor(@NonNull String resName, @NonNull String type) throws Resources.NotFoundException {
     Resources res = getResources();
 
     if (res == null) {
       throw new Resources.NotFoundException();
     }
     resName = appendSuffix(resName);
-    return res.getColor(res.getIdentifier(resName, TYPE_COLOR, packageName));
+    return res.getColor(res.getIdentifier(resName, type, packageName));
+  }
+
+  /**
+   * 根据资源名称获取颜色值
+   *
+   * @param resName 资源名称
+   * @return 颜色值
+   */
+  public int getColor(@NonNull String resName) throws Resources.NotFoundException {
+    return getColor(resName, TYPE_COLOR);
+  }
+
+  /**
+   * 根据资源名称获取颜色列表
+   *
+   * @param resName 资源名称
+   * @param type 资源类型
+   * @return 颜色列表
+   */
+  @Nullable ColorStateList getColorStateList(String resName, @NonNull String type) {
+    Resources res = getResources();
+
+    if (res == null) {
+      return null;
+    }
+    resName = appendSuffix(resName);
+    int resId = res.getIdentifier(resName, type, packageName);
+
+    if (resId != 0) {
+      try {
+        return res.getColorStateList(resId);
+      } catch (Resources.NotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+    return null;
   }
 
   /**

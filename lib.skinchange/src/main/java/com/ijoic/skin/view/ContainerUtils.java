@@ -1,9 +1,7 @@
-package com.ijoic.skin;
+package com.ijoic.skin.view;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.ijoic.skin.view.ViewContainer;
 
 import java.util.List;
 
@@ -21,10 +19,12 @@ class ContainerUtils {
    * @param containerItems 容器列表
    * @param item 容器
    */
-  static void addItem(@NonNull List<ViewContainer> containerItems, @NonNull  ViewContainer item) {
+  static boolean addItem(@NonNull List<ViewContainer> containerItems, @NonNull  ViewContainer item) {
     if (!containsItem(containerItems, item)) {
       containerItems.add(item);
+      return true;
     }
+    return false;
   }
 
   /**
@@ -33,12 +33,13 @@ class ContainerUtils {
    * @param containerItems 容器列表
    * @param item 容器
    */
-  static void removeItem(@NonNull List<ViewContainer> containerItems, @NonNull  ViewContainer item) {
+  static @Nullable ViewContainer removeItem(@NonNull List<ViewContainer> containerItems, @NonNull  ViewContainer item) {
     ViewContainer containerItem = findContainerItem(containerItems, item);
 
     if (containerItem != null) {
       containerItems.remove(containerItem);
     }
+    return containerItem;
   }
 
   /**

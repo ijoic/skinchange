@@ -1,4 +1,4 @@
-package com.ijoic.skin.view;
+package com.ijoic.skin.view.compat;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;

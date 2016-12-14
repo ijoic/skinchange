@@ -18,16 +18,18 @@ import android.view.View;
 import com.ijoic.skin.attr.SkinAttrSupport;
 import com.ijoic.skin.attr.SkinView;
 import com.ijoic.skin.callback.SkinChangeCallback;
-import com.ijoic.skin.view.ActivityViewContainer;
-import com.ijoic.skin.view.FragmentViewContainer;
+import com.ijoic.skin.callback.SkinTask;
+import com.ijoic.skin.view.ViewContainerPool;
+import com.ijoic.skin.view.compat.ActivityViewContainer;
+import com.ijoic.skin.view.compat.FragmentViewContainer;
 import com.ijoic.skin.view.ViewContainer;
+import com.ijoic.skin.view.compat.SkinTaskViewContainer;
 
 import org.jetbrains.annotations.Contract;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,17 +49,24 @@ public class SkinManager {
     SkinManager instance = new SkinManager();
   }
 
-  private SkinManager() {}
-
   private static final @NonNull Handler handler = new Handler();
 
-  private final @NonNull List<ViewContainer> viewContainers = new ArrayList<>();
-  private final @NonNull List<ViewContainer> viewContainersRemoveCache = new ArrayList<>();
+  private final @NonNull ViewContainerPool containerPool = new ViewContainerPool();
 
   private @Nullable WeakReference<Context> refContext;
   private @Nullable SkinPreference skinPrefs;
 
-  private final @NonNull ResourcesManager resourcesManager = new ResourcesManager();
+  private final @NonNull ResourcesManager resourcesManager;
+  private final @NonNull ResourcesTool resourcesTool;
+
+  private static final String TAG_ACTIVITY = "activity";
+  private static final String TAG_FRAGMENT = "fragment";
+  private static final String TAG_SKIN_TASK = "skintask";
+
+  private SkinManager() {
+    resourcesManager = new ResourcesManager();
+    resourcesTool = new ResourcesTool(resourcesManager);
+  }
 
   /**
    * 初始化
@@ -67,6 +76,7 @@ public class SkinManager {
   public void init(@NonNull Context context) {
     context = context.getApplicationContext();
     refContext = new WeakReference<>(context);
+    resourcesTool.setContext(context);
 
     if (skinPrefs == null) {
       skinPrefs = new SkinPreference(context);
@@ -74,7 +84,7 @@ public class SkinManager {
     String pluginPath = skinPrefs.getPluginPath();
     String pluginPackage = skinPrefs.getPluginPackageName();
     String suffix = skinPrefs.getPluginSuffix();
-    ContainerUtils.trim(viewContainers, viewContainersRemoveCache);
+    containerPool.trim();
 
     if (!initPlugin(pluginPath, pluginPackage, suffix)) {
       resetResourcesManager();
@@ -173,14 +183,23 @@ public class SkinManager {
   }
 
   /**
+   * 获取资源工具
+   *
+   * @return 资源工具
+   */
+  public @NonNull ResourcesTool getResourcesTool() {
+    return resourcesTool;
+  }
+
+  /**
    * 注册
    *
    * <p>在{@link Activity#onCreate(Bundle)}方法中调用</p>
    *
    * @param activity 活动
    */
-  public void register(@NonNull final Activity activity) {
-    register(new ActivityViewContainer(activity));
+  public void register(@NonNull Activity activity) {
+    register(TAG_ACTIVITY, new ActivityViewContainer(activity));
   }
 
   /**
@@ -191,7 +210,7 @@ public class SkinManager {
    * @param activity 活动
    */
   public void unregister(@NonNull Activity activity) {
-    unregister(new ActivityViewContainer(activity));
+    unregister(TAG_ACTIVITY, new ActivityViewContainer(activity));
   }
 
   /**
@@ -201,8 +220,8 @@ public class SkinManager {
    *
    * @param fragment 碎片
    */
-  public void register(@NonNull final Fragment fragment) {
-    register(new FragmentViewContainer(fragment));
+  public void register(@NonNull Fragment fragment) {
+    register(TAG_FRAGMENT, new FragmentViewContainer(fragment));
   }
 
   /**
@@ -213,11 +232,42 @@ public class SkinManager {
    * @param fragment 碎片
    */
   public void unregister(@NonNull Fragment fragment) {
-    unregister(new FragmentViewContainer(fragment));
+    unregister(TAG_FRAGMENT, new FragmentViewContainer(fragment));
   }
 
-  private void register(@NonNull final ViewContainer containerItem) {
-    ContainerUtils.addItem(viewContainers, containerItem);
+  /**
+   * 注册换肤任务
+   *
+   * <p>在自定义视图中使用，结合{@link ResourcesTool}使用</p>
+   *
+   * @param view 视图
+   * @param skinTask 换肤任务
+   *
+   * @see ResourcesTool#getColor(int)
+   * @see ResourcesTool#getDrawable(int)
+   * @see ResourcesTool#getColorStateList(int)
+   */
+  public<T extends View> void registerSkinTask(@NonNull T view, @NonNull SkinTask<T> skinTask) {
+    register(TAG_SKIN_TASK, new SkinTaskViewContainer<T>(view, skinTask));
+  }
+
+  /**
+   * 取消注册换肤任务
+   *
+   * <p>在自定义视图中使用，{@link ResourcesTool}使用</p>
+   *
+   * @param view 视图
+   *
+   * @see ResourcesTool#getColor(int)
+   * @see ResourcesTool#getDrawable(int)
+   * @see ResourcesTool#getColorStateList(int)
+   */
+  public<T extends View> void unregisterSkinTask(@NonNull T view) {
+    unregister(TAG_SKIN_TASK, new SkinTaskViewContainer<T>(view, null));
+  }
+
+  private void register(@NonNull String tag, @NonNull final ViewContainer containerItem) {
+    containerPool.add(tag, containerItem);
 
     handler.post(new Runnable() {
       @Override
@@ -227,8 +277,8 @@ public class SkinManager {
     });
   }
 
-  private void unregister(final ViewContainer containerItem) {
-    ContainerUtils.removeItem(viewContainers, containerItem);
+  private void unregister(@NonNull String tag, @NonNull ViewContainer containerItem) {
+    containerPool.remove(tag, containerItem);
   }
 
   private void applySkin(@NonNull ViewContainer viewContainer) {
@@ -269,9 +319,10 @@ public class SkinManager {
   }
 
   private void notifyChangedListeners() {
+    List<ViewContainer> containerItems = containerPool.getContainerItemsAll();
     View view;
 
-    for (ViewContainer containerItem : viewContainers) {
+    for (ViewContainer containerItem : containerItems) {
       view = containerItem.getView();
 
       if (view != null) {
