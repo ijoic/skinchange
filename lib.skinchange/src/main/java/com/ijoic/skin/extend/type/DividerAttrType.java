@@ -27,15 +27,6 @@ public class DividerAttrType implements SkinAttrType {
     ResourcesManager rm = SkinManager.getInstance().getResourcesManager();
     Drawable d = rm.getDrawableByName(resName);
 
-    if (d == null) {
-      try {
-        int dividerColor = rm.getColor(resName);
-        d = new ColorDrawable(dividerColor);
-
-      } catch (Resources.NotFoundException e) {
-        e.printStackTrace();
-      }
-    }
     if (d != null) {
       ((ListView) view).setDivider(d);
     }

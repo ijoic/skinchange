@@ -248,6 +248,22 @@ public class SkinManager {
    * @see ResourcesTool#getColorStateList(int)
    */
   public<T extends View> void registerSkinTask(@NonNull T view, @NonNull SkinTask<T> skinTask) {
+    register(TAG_SKIN_TASK, new SkinTaskViewContainer<T>(view, skinTask));
+  }
+
+  /**
+   * 注册换肤任务并立即执行一次换肤
+   *
+   * <p>在自定义视图中使用，结合{@link ResourcesTool}使用</p>
+   *
+   * @param view 视图
+   * @param skinTask 换肤任务
+   *
+   * @see ResourcesTool#getColor(int)
+   * @see ResourcesTool#getDrawable(int)
+   * @see ResourcesTool#getColorStateList(int)
+   */
+  public<T extends View> void registerAndPerformSkinTask(@NonNull T view, @NonNull SkinTask<T> skinTask) {
     skinTask.performSkinChange(view);
     register(TAG_SKIN_TASK, new SkinTaskViewContainer<T>(view, skinTask));
   }
