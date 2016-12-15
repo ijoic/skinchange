@@ -8,7 +8,6 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -48,8 +47,6 @@ public class SkinManager {
   private interface SingletonHolder {
     SkinManager instance = new SkinManager();
   }
-
-  private static final @NonNull Handler handler = new Handler();
 
   private final @NonNull ViewContainerPool containerPool = new ViewContainerPool();
 
@@ -194,7 +191,7 @@ public class SkinManager {
   /**
    * 注册
    *
-   * <p>在{@link Activity#onCreate(Bundle)}方法中调用</p>
+   * <p>在{@link Activity#onCreate(Bundle)}方法中，{@link Activity#setContentView(int)}完成之后调用</p>
    *
    * @param activity 活动
    */
@@ -248,7 +245,7 @@ public class SkinManager {
    * @see ResourcesTool#getColorStateList(int)
    */
   public<T extends View> void registerSkinTask(@NonNull T view, @NonNull SkinTask<T> skinTask) {
-    register(TAG_SKIN_TASK, new SkinTaskViewContainer<T>(view, skinTask));
+    register(TAG_SKIN_TASK, new SkinTaskViewContainer<>(view, skinTask));
   }
 
   /**
@@ -265,7 +262,7 @@ public class SkinManager {
    */
   public<T extends View> void registerAndPerformSkinTask(@NonNull T view, @NonNull SkinTask<T> skinTask) {
     skinTask.performSkinChange(view);
-    register(TAG_SKIN_TASK, new SkinTaskViewContainer<T>(view, skinTask));
+    register(TAG_SKIN_TASK, new SkinTaskViewContainer<>(view, skinTask));
   }
 
   /**
@@ -280,18 +277,12 @@ public class SkinManager {
    * @see ResourcesTool#getColorStateList(int)
    */
   public<T extends View> void unregisterSkinTask(@NonNull T view) {
-    unregister(TAG_SKIN_TASK, new SkinTaskViewContainer<T>(view, null));
+    unregister(TAG_SKIN_TASK, new SkinTaskViewContainer<>(view, null));
   }
 
   private void register(@NonNull String tag, @NonNull final ViewContainer containerItem) {
     containerPool.add(tag, containerItem);
-
-    handler.post(new Runnable() {
-      @Override
-      public void run() {
-        applySkin(containerItem);
-      }
-    });
+    applySkin(containerItem);
   }
 
   private void unregister(@NonNull String tag, @NonNull ViewContainer containerItem) {
