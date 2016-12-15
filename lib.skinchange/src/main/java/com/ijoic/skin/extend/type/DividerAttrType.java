@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.ijoic.skin.ResourcesManager;
@@ -21,14 +22,17 @@ public class DividerAttrType implements SkinAttrType {
 
   @Override
   public void apply(@NonNull View view, @NonNull String resName) {
-    if (!(view instanceof ListView)) {
-      return;
-    }
     ResourcesManager rm = SkinManager.getInstance().getResourcesManager();
     Drawable d = rm.getDrawableByName(resName);
 
-    if (d != null) {
+    if (d == null) {
+      return;
+    }
+    if (view instanceof ListView) {
       ((ListView) view).setDivider(d);
+
+    } else if (view instanceof LinearLayout) {
+      ((LinearLayout) view).setDividerDrawable(d);
     }
   }
 
