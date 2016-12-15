@@ -9,11 +9,6 @@ package com.ijoic.skin.extend;
 public interface AttrTypes {
 
   /**
-   * 文字颜色[TextView]
-   */
-  String TEXT_COLOR = "textColor";
-
-  /**
    * 背景[View]
    */
   String BACKGROUND = "background";
@@ -24,9 +19,19 @@ public interface AttrTypes {
   String SRC = "src";
 
   /**
-   * 分隔符[ListView]
+   * 分隔符[ListView|LinearLayout]
    */
   String DIVIDER = "divider";
+
+  /**
+   * 文字颜色[TextView]
+   */
+  String TEXT_COLOR = "textColor";
+
+  /**
+   * 提示颜色[TextView]
+   */
+  String TEXT_COLOR_HINT = "textColorHint";
 
   /**
    * 左侧图片[TextView]
@@ -34,7 +39,7 @@ public interface AttrTypes {
   String DRAWABLE_LEFT = "drawableLeft";
 
   /**
-   * 左侧图片[TextView]
+   * 上侧图片[TextView]
    */
   String DRAWABLE_TOP = "drawableTop";
 
