@@ -17,12 +17,11 @@ import android.view.View;
 import com.ijoic.skin.attr.SkinAttrSupport;
 import com.ijoic.skin.attr.SkinView;
 import com.ijoic.skin.callback.SkinChangeCallback;
-import com.ijoic.skin.callback.SkinTask;
-import com.ijoic.skin.view.ViewContainerPool;
-import com.ijoic.skin.view.compat.ActivityViewContainer;
-import com.ijoic.skin.view.compat.FragmentViewContainer;
-import com.ijoic.skin.view.ViewContainer;
-import com.ijoic.skin.view.compat.SkinTaskViewContainer;
+import com.ijoic.skin.view.SkinCompat;
+import com.ijoic.skin.view.SkinCompatPool;
+import com.ijoic.skin.view.ActivitySkinTask;
+import com.ijoic.skin.view.FragmentSkinTask;
+import com.ijoic.skin.view.SkinTask;
 
 import org.jetbrains.annotations.Contract;
 
@@ -48,7 +47,7 @@ public class SkinManager {
     SkinManager instance = new SkinManager();
   }
 
-  private final @NonNull ViewContainerPool containerPool = new ViewContainerPool();
+  private final @NonNull SkinCompatPool containerPool = new SkinCompatPool();
 
   private @Nullable WeakReference<Context> refContext;
   private @Nullable SkinPreference skinPrefs;
@@ -196,7 +195,7 @@ public class SkinManager {
    * @param activity 活动
    */
   public void register(@NonNull Activity activity) {
-    register(TAG_ACTIVITY, new ActivityViewContainer(activity));
+    register(TAG_ACTIVITY, new SkinCompat<>(activity, ActivitySkinTask.getInstance()));
   }
 
   /**
@@ -207,7 +206,7 @@ public class SkinManager {
    * @param activity 活动
    */
   public void unregister(@NonNull Activity activity) {
-    unregister(TAG_ACTIVITY, new ActivityViewContainer(activity));
+    unregister(TAG_ACTIVITY, new SkinCompat<>(activity, null));
   }
 
   /**
@@ -218,7 +217,7 @@ public class SkinManager {
    * @param fragment 碎片
    */
   public void register(@NonNull Fragment fragment) {
-    register(TAG_FRAGMENT, new FragmentViewContainer(fragment));
+    register(TAG_FRAGMENT, new SkinCompat<>(fragment, FragmentSkinTask.getInstance()));
   }
 
   /**
@@ -229,7 +228,7 @@ public class SkinManager {
    * @param fragment 碎片
    */
   public void unregister(@NonNull Fragment fragment) {
-    unregister(TAG_FRAGMENT, new FragmentViewContainer(fragment));
+    unregister(TAG_FRAGMENT, new SkinCompat<>(fragment, null));
   }
 
   /**
@@ -237,15 +236,15 @@ public class SkinManager {
    *
    * <p>在自定义视图中使用，结合{@link ResourcesTool}使用</p>
    *
-   * @param view 视图
+   * @param compat 组件
    * @param skinTask 换肤任务
    *
    * @see ResourcesTool#getColor(int)
    * @see ResourcesTool#getDrawable(int)
    * @see ResourcesTool#getColorStateList(int)
    */
-  public<T extends View> void registerSkinTask(@NonNull T view, @NonNull SkinTask<T> skinTask) {
-    register(TAG_SKIN_TASK, new SkinTaskViewContainer<>(view, skinTask));
+  public<T extends View> void registerSkinTask(@NonNull T compat, @NonNull SkinTask<T> skinTask) {
+    register(TAG_SKIN_TASK, new SkinCompat<>(compat, skinTask));
   }
 
   /**
@@ -253,51 +252,34 @@ public class SkinManager {
    *
    * <p>在自定义视图中使用，结合{@link ResourcesTool}使用</p>
    *
-   * @param view 视图
+   * @param compat 组件
    * @param skinTask 换肤任务
    *
    * @see ResourcesTool#getColor(int)
    * @see ResourcesTool#getDrawable(int)
    * @see ResourcesTool#getColorStateList(int)
    */
-  public<T extends View> void registerAndPerformSkinTask(@NonNull T view, @NonNull SkinTask<T> skinTask) {
-    skinTask.performSkinChange(view);
-    register(TAG_SKIN_TASK, new SkinTaskViewContainer<>(view, skinTask));
+  public<T extends View> void registerAndPerformSkinTask(@NonNull T compat, @NonNull SkinTask<T> skinTask) {
+    skinTask.performSkinChange(compat);
+    register(TAG_SKIN_TASK, new SkinCompat<>(compat, skinTask));
   }
 
   /**
    * 取消注册换肤任务
    *
-   * <p>在自定义视图中使用，{@link ResourcesTool}使用</p>
-   *
-   * @param view 视图
-   *
-   * @see ResourcesTool#getColor(int)
-   * @see ResourcesTool#getDrawable(int)
-   * @see ResourcesTool#getColorStateList(int)
+   * @param compat 组件
    */
-  public<T extends View> void unregisterSkinTask(@NonNull T view) {
-    unregister(TAG_SKIN_TASK, new SkinTaskViewContainer<>(view, null));
+  public<T extends View> void unregisterSkinTask(@NonNull T compat) {
+    unregister(TAG_SKIN_TASK, new SkinCompat<>(compat, null));
   }
 
-  private void register(@NonNull String tag, @NonNull final ViewContainer containerItem) {
-    containerPool.add(tag, containerItem);
-    applySkin(containerItem);
+  private void register(@NonNull String tag, @NonNull final SkinCompat compat) {
+    containerPool.add(tag, compat);
+    compat.performSkinChange();
   }
 
-  private void unregister(@NonNull String tag, @NonNull ViewContainer containerItem) {
-    containerPool.remove(tag, containerItem);
-  }
-
-  private void applySkin(@NonNull ViewContainer viewContainer) {
-    applySkin(viewContainer.getView());
-  }
-
-  private void applySkin(@Nullable View rootView) {
-    if (rootView == null) {
-      return;
-    }
-    injectSkin(rootView);
+  private void unregister(@NonNull String tag, @NonNull SkinCompat compat) {
+    containerPool.remove(tag, compat);
   }
 
   /**
@@ -327,15 +309,10 @@ public class SkinManager {
   }
 
   private void notifyChangedListeners() {
-    List<ViewContainer> containerItems = containerPool.getContainerItemsAll();
-    View view;
+    List<SkinCompat> compatItems = containerPool.getCompatItemsAll();
 
-    for (ViewContainer containerItem : containerItems) {
-      view = containerItem.getView();
-
-      if (view != null) {
-        applySkin(view);
-      }
+    for (SkinCompat compatItem : compatItems) {
+      compatItem.performSkinChange();
     }
   }
 

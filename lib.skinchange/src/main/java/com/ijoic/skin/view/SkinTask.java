@@ -1,7 +1,6 @@
-package com.ijoic.skin.callback;
+package com.ijoic.skin.view;
 
 import android.support.annotation.NonNull;
-import android.view.View;
 
 /**
  * 皮肤任务
@@ -11,13 +10,13 @@ import android.view.View;
  *
  * @param <T> 视图类型
  */
-public interface SkinTask<T extends View> {
+public interface SkinTask<T> {
 
   /**
    * 执行皮肤替换
    *
-   * @param view 视图
+   * @param compat 组件
    */
-  void performSkinChange(@NonNull T view);
+  void performSkinChange(@NonNull T compat);
 
 }
