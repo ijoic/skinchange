@@ -47,6 +47,7 @@
 * src
 * divider
 * textColor
+* textColorHint
 * drawableLeft
 * drawableTop
 * drawableRight
