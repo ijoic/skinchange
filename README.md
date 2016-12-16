@@ -1,5 +1,7 @@
 # skinchange
 
+[![](https://jitpack.io/v/ijoic/skinchange.svg)](https://jitpack.io/#ijoic/skinchange)
+
 一种完全无侵入的换肤方式，支持插件式和应用内，无需重启Activity。
 
 在[AndroidChangeSkin](https://github.com/hongyangAndroid/AndroidChangeSkin)的基础上，增加自定义属性扩展的灵活性，并且增加碎片换肤支持。
@@ -14,73 +16,111 @@
 
 ## 引入
 
-下载skinchange，作为module依赖至主项目，例如：
+1.  在根`build.gradle`中添加`jitpack`仓库：
+    
+    ```xml
+    
+    allprojects {
+      repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+      }
+    }
+    
+    ```
+    
+2. 添加库项目依赖：
+    
+    ```xml
+    
+    dependencies {
+      compile 'com.github.ijoic.skinchange:lib.skinchange:v1.0.3'
+    }
+    
+    ```
+    
+## 属性支持
 
-```java
+目前支持的属性包括：
 
-dependencies {
-  compile project(':skinchange')
-}
+* background
+* src
+* divider
+* textColor
+* drawableLeft
+* drawableTop
+* drawableRight
+* drawableBottom
 
-```
 
 ## 使用
 
-* Application
+### 基本配置
 
-    `Application`中调用`SkinManager.getInstance().init(this);`。
-
-        public class MyApplication extends Application {
-          @Override
-          public void onCreate() {
-            super.onCreate();
-            SkinManager.getInstance().init(this);
-          }
-        }
-
-* Activity
-
-    在需要换肤的`Activity`的`onCreate()`和`onDestroy`中，分别：
+1. 在`Application`中初始化皮肤管理器。
     
-    ```java
+    ```
     
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      SkinManager.getInstance().register(this);
-      // ..
-    }
-    
-    @Override
-    protected void onDestroy() {
-      super.onDestroy();
-      SkinManager.getInstance().unregister(this);
+    public class MyApplication extends Application {
+      @Override
+      public void onCreate() {
+        super.onCreate();
+        SkinManager.getInstance().init(this);
+      }
     }
     
     ```
     
-* Fragment
+2. 在`Activity`中注册、监听换肤操作。
     
-    在需要换肤的`Fragment`的`onActivityCreated()`和`onDestroy`中，分别：
+    ```
     
-    ```java
-    
-    @Override
-    protected void onActivityCreated(Bundle savedInstanceState) {
-      super.onActivityCreated(savedInstanceState);
-      SkinManager.getInstance().register(this);
-      // ..
-    }
-    
-    @Override
-    protected void onDestroy() {
-      super.onDestroy();
-      SkinManager.getInstance().unregister(this);
+    public class MyActivity extends Activity {
+      
+      @Override
+      protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.my_activity);
+        
+        // 这里的调用，必须在视图准备完成之后
+        SkinManager.getInstance().register(this);
+        ...
+      }
+      
+      @Override
+      protected void onDestroy() {
+        super.onDestroy();
+        SkinManager.getInstance().unregister(this);
+      }
+      
     }
     
     ```
     
-* 布局文件
+3. 在`Fragment`中注册、监听换肤操作。
+    
+    ```
+    
+    public class MyFragment extends Fragment {
+      
+      @Override
+      public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        SkinManager.getInstance().register(this);
+        ...
+      }
+      
+      @Override
+      public void onDestroy() {
+        super.onDestroy();
+        SkinManager.getInstance().unregister(this);
+      }
+      
+    }
+    
+    ```
+    
+4. 布局文件配置
     
     布局文件中添加支持，主要依赖于tag属性：
     
@@ -107,7 +147,7 @@ dependencies {
     
     简言之：需要换肤的视图，按上述格式在xml文件中添加`tag`就可以了。
     
-* 换肤API
+5. 切换皮肤
     
     插件式：
     
@@ -120,9 +160,11 @@ dependencies {
         @Override
         public void onStart() {
         }
+        
         @Override
         public void onError(String errorMessage) {
         }
+        
         @Override
         publc void onComplete() {
         }
@@ -142,85 +184,105 @@ dependencies {
     应用内多套皮肤以后缀区别就可以，比如：`main_bg`，皮肤资源可以为：`main_bg_red`、`main_bg_green`等。
     
     换肤时，直接传入后缀，例如上面的`red`、`green`。
-   
-* 扩展
     
-    1. 创建属性类型：
-      
-      ```java
-      
-      public class MyAttrType implements SkinAttrType {
-        @Override
-        public void apply(@NonNull View view, @NonNull String resName) {
-          if (!(view instance MyCustomView)) {
-            return;
-          }
-          ResourcesManager rm = SkinManager.getInstance().getResourcesManager();
-          Drawable d = rm.getDrawableByName(resName);
-          
-          if (d != null) {
-            // ..
-          }
+    
+### 动态创建视图换肤
+
+对于动态创建的视图，在视图创建完成后，必须手动调用一次皮肤替换操作。
+
+```java
+
+  View view = inflater.inflate(R.id.my_layout, parent, false);
+  ...
+  SkinManager.getInstance().injectSkin(view);
+
+```
+
+
+### 动态更改皮肤关联属性
+
+更改皮肤关联属性，必须先更新皮肤tag，然后重新调用一次皮肤刷新。
+
+```java
+
+  TextView view = (TextView) findViewById(R.id.my_text);
+  int newColorRes = R.color.my_new_text_color;
+  
+  view.setTextColor(context.getResources().getColor(newColorRes));
+  SkinTool.fillTag(view, newColorRes, AttrTypes.TEXT_COLOR);
+  SkinManager.getInstance().injectSkin(view);
+
+```
+
+
+### 自定义视图换肤
+
+自定义视图，由于关联的皮肤属性可能比较多，手动配置麻烦，因此使用皮肤任务的形式换肤。
+
+```java
+
+  CustomView view;
+
+  SkinManager.getInstance().registerSkinTask(view, new SkinTask<CustomView>() {
+    @Override
+    public void injectSkin(@NonNull CustomView view) {
+      ResourcesTool resTool = SkinManager.getInstance().getResourcesTool();
+
+      view.setColor(resTool.getColor(R.id.my_custom_color));
+      ...
+    }
+  });
+
+```
+
+
+### 自定义属性支持
+
+1. 创建属性类型：
+    
+    ```java
+    
+    public class MyAttrType implements SkinAttrType {
+      @Override
+      public void apply(@NonNull View view, @NonNull String resName) {
+        if (!(view instance MyCustomView)) {
+          return;
+        }
+        ResourcesManager rm = SkinManager.getInstance().getResourcesManager();
+        Drawable d = rm.getDrawableByName(resName);
+        
+        if (d != null) {
+          // ..
         }
       }
+    }
+    
+    ```
+    
+2. 在`Application#onCreate()`方法中，配置属性类型：
+    
+    ```
+    
+    @Override
+    protected void onCreate() {
+      super.onCreate();
       
-      ```
-      
-    2. 在`Application#onCreate()`方法中，配置属性类型：
-      
-      ```
-      
-      @Override
-      protected void onCreate() {
-        super.onCreate();
-        
-        AttrTypeFactory.register("my_custom_attr", MyAttrType.class);
-        // ..
-        SkinManager.getInstance().init(this);
-      }
-      
-      ```
-      
-    3. 在xml或者动态生成的视图中使用：
-      
-      ```
-      
-      MyCustomView view = findViewById(R.id.my_custom_view);
+      AttrTypeFactory.register("my_custom_attr", MyAttrType.class);
       // ..
-      
-      SkinTool.fillTag(view, R.drawable.ic_default, "my_custom_attr");
-      SkinManager.getInstance().injectSkin(view);
-      
-      ```
-      
-* 动态创建、修改视图
+      SkinManager.getInstance().init(this);
+    }
     
-    动态创建的视图，需要手动调用注入皮肤。这种类型的应用场景，多见于`Adapter`、`PopupWindow`之类。
+    ```
     
-    在动态注入皮肤之前，仍然要调用默认的属性设置代码。
+3. 在xml或者动态创建的视图中使用：
     
-    * xml中设置皮肤TAG，代码中不做修改：
-      
-      ```
-      
-      View view = LayoutInflater.from(context).inflate(R.layout.my_layout, parent, false);
-      SkinManager.getInstance().injectSkin(view);
-      
-      ```
-      
-    * 在代码中修改皮肤关联属性：
-      
-      ```
-      
-      View rootView = findViewById(R.id.my_cusom_view);
-      TextView tv = (TextView) rootView.findViewById(R.id.my_text);
-      
-      tv.setTextColor(context.getResources().getColor(R.color.text_secondary));
-      SkinTool.fillTag(tv, R.color.text_secondary, AttrTypes.COLOR);
-
-      // ..
-
-      SkinManager.getInstance().injectSkin(rootView);
-      
-      ```
+    ```
+    
+    MyCustomView view = findViewById(R.id.my_custom_view);
+    // ..
+    
+    SkinTool.fillTag(view, R.drawable.my_drawable, "my_custom_attr");
+    SkinManager.getInstance().injectSkin(view);
+    
+    ```
     
