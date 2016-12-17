@@ -10,12 +10,12 @@ import com.ijoic.skin.SkinManager;
 import com.ijoic.skin.attr.SkinAttrType;
 
 /**
- * 提示文字颜色属性类型
+ * 链接文字颜色属性类型
  *
  * @author ijoic verstlim@126.com
  * @version 1.0.5
  */
-public class TextColorHintAttrType implements SkinAttrType {
+public class TextColorLinkAttrType implements SkinAttrType {
   @Override
   public void apply(@NonNull View view, @NonNull String resName) {
     if (!(view instanceof TextView)) {
@@ -27,6 +27,6 @@ public class TextColorHintAttrType implements SkinAttrType {
     if (colorList == null) {
       return;
     }
-    ((TextView) view).setHintTextColor(colorList);
+    ((TextView) view).setLinkTextColor(colorList);
   }
 }

@@ -17,12 +17,10 @@ import com.ijoic.skin.attr.SkinAttrType;
  */
 abstract class CompoundDrawableAttrType implements SkinAttrType {
 
-  private static final int COMPUND_SIZE = 4;
-
-  protected static final int INDEX_LEFT = 0;
-  protected static final int INDEX_TOP = 1;
-  protected static final int INDEX_RIGHT = 2;
-  protected static final int INDEX_BOTTOM = 3;
+  static final int INDEX_LEFT = 0;
+  static final int INDEX_TOP = 1;
+  static final int INDEX_RIGHT = 2;
+  static final int INDEX_BOTTOM = 3;
 
   @Override
   public void apply(@NonNull View view, @NonNull String resName) {
@@ -36,9 +34,6 @@ abstract class CompoundDrawableAttrType implements SkinAttrType {
       TextView castView = (TextView) view;
       Drawable[] drawables = castView.getCompoundDrawables();
 
-      if (drawables == null) {
-        drawables = new Drawable[COMPUND_SIZE];
-      }
       d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
       drawables[getCompoundIndex()] = d;
 

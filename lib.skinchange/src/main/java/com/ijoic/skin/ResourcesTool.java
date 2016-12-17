@@ -9,6 +9,7 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 
 import java.lang.ref.WeakReference;
 
@@ -107,6 +108,28 @@ public class ResourcesTool {
     return colorStateList;
   }
 
+  /**
+   * 获取字符串内容
+   *
+   * <p>返回皮肤中包含的字符串内容，若不存在，返回当前主题中的字符串内容</p>
+   *
+   * @param resId 资源ID
+   * @return 字符串内容
+   */
+  public @Nullable String getString(@StringRes int resId) {
+    Resources res = getResources();
+
+    if (res == null) {
+      throw new Resources.NotFoundException();
+    }
+    String text = getSkinText(res, resId);
+
+    if (text == null) {
+      text = res.getString(resId);
+    }
+    return text;
+  }
+
   private @ColorInt int getSkinColor(@NonNull Resources res, @ColorRes int resId) throws Resources.NotFoundException {
     String resName = res.getResourceEntryName(resId);
     String type = res.getResourceTypeName(resId);
@@ -126,6 +149,13 @@ public class ResourcesTool {
     String type = res.getResourceTypeName(resId);
 
     return skinResManager.getColorStateList(resName, type);
+  }
+
+  private @Nullable String getSkinText(@NonNull Resources res, @StringRes int resId) {
+    String resName = res.getResourceEntryName(resId);
+    String type = res.getResourceTypeName(resId);
+
+    return skinResManager.getString(resName, type);
   }
 
   private @Nullable Resources getResources() {

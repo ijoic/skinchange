@@ -32,6 +32,7 @@ public class ResourcesManager {
   private static final String TYPE_DRAWABLE = "drawable";
   private static final String TYPE_COLOR = "color";
   private static final String TYPE_MIPMAP = "mipmap";
+  private static final String TYPE_STRING = "string";
 
   /**
    * 构造函数
@@ -221,6 +222,42 @@ public class ResourcesManager {
       }
     }
     return null;
+  }
+
+  /**
+   * 根据资源名称获取字符串内容
+   *
+   * @param resName 资源名称
+   * @param type 资源类型
+   * @return 字符串内容
+   */
+  @Nullable String getString(String resName, @NonNull String type) {
+    Resources res = getResources();
+
+    if (res == null) {
+      return null;
+    }
+    resName = appendSuffix(resName);
+    int resId = res.getIdentifier(resName, type, packageName);
+
+    if (resId != 0) {
+      try {
+        return res.getString(resId);
+      } catch (Resources.NotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+    return null;
+  }
+
+  /**
+   * 根据资源名称获取字符串内容
+   *
+   * @param resName 资源名称
+   * @return 字符串内容
+   */
+  public @Nullable String getString(String resName) {
+    return getString(resName, TYPE_STRING);
   }
 
   /**
