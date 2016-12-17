@@ -243,7 +243,7 @@ public class SkinManager {
    * @see ResourcesTool#getDrawable(int)
    * @see ResourcesTool#getColorStateList(int)
    */
-  public<T extends View> void registerSkinTask(@NonNull T compat, @NonNull SkinTask<T> skinTask) {
+  public<T> void registerSkinTask(@NonNull T compat, @NonNull SkinTask<T> skinTask) {
     register(TAG_SKIN_TASK, new SkinCompat<>(compat, skinTask));
   }
 
@@ -259,7 +259,7 @@ public class SkinManager {
    * @see ResourcesTool#getDrawable(int)
    * @see ResourcesTool#getColorStateList(int)
    */
-  public<T extends View> void registerAndPerformSkinTask(@NonNull T compat, @NonNull SkinTask<T> skinTask) {
+  public<T> void registerAndPerformSkinTask(@NonNull T compat, @NonNull SkinTask<T> skinTask) {
     skinTask.performSkinChange(compat);
     register(TAG_SKIN_TASK, new SkinCompat<>(compat, skinTask));
   }
@@ -269,7 +269,7 @@ public class SkinManager {
    *
    * @param compat 组件
    */
-  public<T extends View> void unregisterSkinTask(@NonNull T compat) {
+  public<T> void unregisterSkinTask(@NonNull T compat) {
     unregister(TAG_SKIN_TASK, new SkinCompat<>(compat, null));
   }
 
