@@ -34,7 +34,7 @@
     ```xml
     
     dependencies {
-      compile 'com.github.ijoic:skinchange:v1.0.4'
+      compile 'com.github.ijoic:skinchange:v1.0.5'
     }
 
     ```
@@ -44,14 +44,21 @@
 目前支持的属性包括：
 
 * background
-* src
-* divider
+* text
 * textColor
+* textColorHighlight
 * textColorHint
+* textColorLink
 * drawableLeft
 * drawableTop
 * drawableRight
 * drawableBottom
+* button
+* src
+* divider
+* listSelector
+* indeterminateDrawable
+* progressDrawable
 
 
 ## 使用
