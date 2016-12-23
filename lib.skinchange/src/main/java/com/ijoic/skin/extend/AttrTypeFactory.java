@@ -14,6 +14,7 @@ import com.ijoic.skin.extend.type.DrawableRightAttrType;
 import com.ijoic.skin.extend.type.DrawableTopAttrType;
 import com.ijoic.skin.extend.type.IndeterminateDrawableAttrType;
 import com.ijoic.skin.extend.type.ListSelectorAttrType;
+import com.ijoic.skin.extend.type.PopupBackgroundAttrType;
 import com.ijoic.skin.extend.type.ProgressDrawableAttrType;
 import com.ijoic.skin.extend.type.SrcAttrType;
 import com.ijoic.skin.extend.type.TextAttrType;
@@ -86,6 +87,7 @@ public class AttrTypeFactory {
     insertAttrType(AttrTypes.INDITERMINATE_DRAWABLE, IndeterminateDrawableAttrType.class);
     insertAttrType(AttrTypes.PROGRESS_DRAWABLE, ProgressDrawableAttrType.class);
     insertAttrType(AttrTypes.THUMB, ThumbAttrType.class);
+    insertAttrType(AttrTypes.POPUP_BACKGROUND, PopupBackgroundAttrType.class);
   }
 
 }

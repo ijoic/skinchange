@@ -34,7 +34,7 @@
     ```xml
     
     dependencies {
-      compile 'com.github.ijoic.skinchange:lib.skinchange:v1.0.7'
+      compile 'com.github.ijoic.skinchange:lib.skinchange:v1.0.8'
     }
 
     ```
@@ -60,6 +60,7 @@
 * indeterminateDrawable
 * progressDrawable
 * thumb
+* popupBackground
 
 
 ## 使用

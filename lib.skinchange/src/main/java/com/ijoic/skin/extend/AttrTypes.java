@@ -93,4 +93,9 @@ public interface AttrTypes {
    */
   String THUMB = "thumb";
 
+  /**
+   * 下拉背景[Spinner]
+   */
+  String POPUP_BACKGROUND = "popupBackground";
+
 }
