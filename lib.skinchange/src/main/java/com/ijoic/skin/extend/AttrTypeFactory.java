@@ -21,6 +21,7 @@ import com.ijoic.skin.extend.type.TextColorAttrType;
 import com.ijoic.skin.extend.type.TextColorHighlightAttrType;
 import com.ijoic.skin.extend.type.TextColorHintAttrType;
 import com.ijoic.skin.extend.type.TextColorLinkAttrType;
+import com.ijoic.skin.extend.type.ThumbAttrType;
 
 /**
  * 皮肤属性工厂
@@ -84,6 +85,7 @@ public class AttrTypeFactory {
     insertAttrType(AttrTypes.LIST_SELECTOR, ListSelectorAttrType.class);
     insertAttrType(AttrTypes.INDITERMINATE_DRAWABLE, IndeterminateDrawableAttrType.class);
     insertAttrType(AttrTypes.PROGRESS_DRAWABLE, ProgressDrawableAttrType.class);
+    insertAttrType(AttrTypes.THUMB, ThumbAttrType.class);
   }
 
 }

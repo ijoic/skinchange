@@ -88,4 +88,9 @@ public interface AttrTypes {
    */
   String PROGRESS_DRAWABLE = "progressDrawable";
 
+  /**
+   * 滑块[SeekBar]
+   */
+  String THUMB = "thumb";
+
 }
