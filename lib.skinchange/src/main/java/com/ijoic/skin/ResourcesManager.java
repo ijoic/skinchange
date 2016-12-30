@@ -63,7 +63,6 @@ public class ResourcesManager {
     pluginResources = isPluginResources ? res : null;
   }
 
-
   /**
    * 设置皮肤信息
    *
@@ -73,6 +72,44 @@ public class ResourcesManager {
   void setSkinInfo(@NonNull String packageName, @Nullable String suffix) {
     this.packageName = packageName;
     setSuffix(suffix);
+  }
+
+  /**
+   * 获取资源包名称
+   *
+   * @return 资源包名称
+   */
+  @NonNull
+  String getPackageName() {
+    return packageName;
+  }
+
+  /**
+   * 获取皮肤资源名称
+   *
+   * @param resName 资源名称
+   * @return 皮肤资源名称
+   */
+  @NonNull
+  private String getSkinResName(@NonNull String resName) {
+    return appendSuffix(resName);
+  }
+
+  /**
+   * 获取皮肤资源ID
+   *
+   * @param resName 资源名称
+   * @param resType 资源类型
+   * @return 皮肤资源ID
+   */
+  int getSkinResId(@NonNull String resName, @NonNull String resType) {
+    Resources res = getResources();
+
+    if (res == null) {
+      throw new Resources.NotFoundException();
+    }
+    resName = getSkinResName(resName);
+    return res.getIdentifier(resName, resType, packageName);
   }
 
   /**
@@ -102,7 +139,7 @@ public class ResourcesManager {
     if (res == null) {
       return null;
     }
-    resName = appendSuffix(resName);
+    resName = getSkinResName(resName);
     int resId = res.getIdentifier(resName, type, packageName);
 
     if (resId != 0) {
@@ -127,7 +164,7 @@ public class ResourcesManager {
     if (res == null) {
       return null;
     }
-    resName = appendSuffix(resName);
+    resName = getSkinResName(resName);
     int resId = res.getIdentifier(resName, TYPE_DRAWABLE, packageName);
 
     if (resId == 0) {
@@ -156,7 +193,7 @@ public class ResourcesManager {
     if (res == null) {
       throw new Resources.NotFoundException();
     }
-    resName = appendSuffix(resName);
+    resName = getSkinResName(resName);
     return res.getColor(res.getIdentifier(resName, type, packageName));
   }
 
@@ -183,7 +220,7 @@ public class ResourcesManager {
     if (res == null) {
       return null;
     }
-    resName = appendSuffix(resName);
+    resName = getSkinResName(resName);
     int resId = res.getIdentifier(resName, type, packageName);
 
     if (resId != 0) {
@@ -208,7 +245,7 @@ public class ResourcesManager {
     if (res == null) {
       return null;
     }
-    resName = appendSuffix(resName);
+    resName = getSkinResName(resName);
     int resId = res.getIdentifier(resName, TYPE_COLOR, packageName);
 
     if (resId == 0) {
@@ -237,7 +274,7 @@ public class ResourcesManager {
     if (res == null) {
       return null;
     }
-    resName = appendSuffix(resName);
+    resName = getSkinResName(resName);
     int resId = res.getIdentifier(resName, type, packageName);
 
     if (resId != 0) {

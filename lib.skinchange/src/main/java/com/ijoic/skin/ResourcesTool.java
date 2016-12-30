@@ -24,6 +24,8 @@ public class ResourcesTool {
   private @Nullable WeakReference<Resources> refResources;
   private final ResourcesManager skinResManager;
 
+  private static final String PREFIX_RES = "res://";
+
   /**
    * 构造函数
    *
@@ -128,6 +130,28 @@ public class ResourcesTool {
       text = res.getString(resId);
     }
     return text;
+  }
+
+  /**
+   * 获取资源URI
+   *
+   * @param resId 资源ID
+   * @return 资源URI
+   */
+  public @NonNull String getResourcesUri(int resId) {
+    Resources res = getResources();
+
+    if (res == null) {
+      throw new Resources.NotFoundException();
+    }
+    String resName = res.getResourceEntryName(resId);
+    String resType = res.getResourceTypeName(resId);
+    int skinResId = skinResManager.getSkinResId(resName, resType);
+
+    if (skinResId == 0) {
+      throw new Resources.NotFoundException("resource R." + resType + "." + resName + " not found in package [" + skinResManager.getPackageName() + "]");
+    }
+    return PREFIX_RES + skinResManager.getPackageName() + "/" + skinResId;
   }
 
   private @ColorInt int getSkinColor(@NonNull Resources res, @ColorRes int resId) throws Resources.NotFoundException {
