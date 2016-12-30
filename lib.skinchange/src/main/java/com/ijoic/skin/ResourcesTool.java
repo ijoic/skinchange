@@ -10,6 +10,9 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.util.Log;
+
+import com.ijoic.skin.constant.SkinConfig;
 
 import java.lang.ref.WeakReference;
 
@@ -149,7 +152,8 @@ public class ResourcesTool {
     int skinResId = skinResManager.getSkinResId(resName, resType);
 
     if (skinResId == 0) {
-      throw new Resources.NotFoundException("resource R." + resType + "." + resName + " not found in package [" + skinResManager.getPackageName() + "]");
+      Log.e(SkinConfig.TAG, "resource R." + resType + "." + resName + " not found in package [" + skinResManager.getPackageName() + "]");
+      return PREFIX_RES + res.getResourcePackageName(resId) + "/" + resId;
     }
     return PREFIX_RES + skinResManager.getPackageName() + "/" + skinResId;
   }
