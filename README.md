@@ -34,7 +34,7 @@
     ```xml
     
     dependencies {
-      compile 'com.github.ijoic.skinchange:lib.skinchange:v1.0.9'
+      compile 'com.github.ijoic.skinchange:lib.skinchange:v1.0.10'
     }
 
     ```

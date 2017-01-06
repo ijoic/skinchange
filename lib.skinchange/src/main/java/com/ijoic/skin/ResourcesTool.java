@@ -85,7 +85,7 @@ public class ResourcesTool {
     }
     Drawable d = getSkinDrawable(res, resId);
 
-    if (d != null) {
+    if (d == null) {
       d = res.getDrawable(resId);
     }
     return d;
