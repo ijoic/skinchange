@@ -2,6 +2,8 @@
 
 [![](https://jitpack.io/v/ijoic/skinchange.svg)](https://jitpack.io/#ijoic/skinchange)
 
+**NOTE: This project has migrate to [VerstSiu/skinchange](https://github.com/VerstSiu/skinchange).**
+
 一种完全无侵入的换肤方式，支持插件式和应用内，无需重启Activity。
 
 在[AndroidChangeSkin](https://github.com/hongyangAndroid/AndroidChangeSkin)的基础上，增加自定义属性扩展的灵活性，并且增加碎片换肤支持。
